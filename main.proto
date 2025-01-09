@@ -1,0 +1,38 @@
+syntax = "proto3"; //define proto version
+package golanggrpc; //exported package
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/handshake"; //imported package
+
+message HandshakeRequest{ //request model 
+	reserved 4; // if some field need to be commented, use reserved to make sure field's uid isnt duplicated
+	reserved "Address"; // use separate reserved for different type
+	
+	string username = 1;
+	HandshakeStatus handshake_status = 2;
+	google.protobuf.Timestamp handshake_at = 3;
+
+	// message Address{
+	// 	string city = 1;
+	// 	string street = 2;
+	// }
+
+	// repeated Address address = 4;
+}
+
+message HandshakeReply{//reply model
+	string message = 1;
+}
+
+enum HandshakeStatus { //type of handshake
+	HANDSHAKE_TYPE_UNKNOWN = 0;
+	HANDSHAKE_TYPE_ACCEPTED = 1;
+	HANDSHAKE_TYPE_REJECTED = 2;
+	HANDSHAKE_TYPE_REQUESTED = 3;
+}
+
+service Handshake {
+	rpc Handshake(HandshakeRequest) returns (HandshakeReply);
+}
+
