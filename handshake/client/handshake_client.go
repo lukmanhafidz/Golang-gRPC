@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	pb "golang-grpc/handshake"
 	"golang-grpc/handshake/model"
 	"log"
@@ -15,21 +16,20 @@ import (
 
 func main() {
 	cfg := model.Config{}
-	err := configor.Load(&cfg, "/Users/lukmanhafidz/Documents/Belajar/Golang/Golang-gRPC/config.yml")
+	err := configor.Load(&cfg, "/Users/lukmanhafidz/Documents/Belajar/Golang/Golang-gRPC/config.yml") //load config.yml
 	if err != nil {
 		log.Fatalf("error when try get config.yml: %s", err.Error())
 	}
 
-	// host := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
-	conn, err := grpc.NewClient("localhost:8000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port), grpc.WithTransportCredentials(insecure.NewCredentials())) //init new grpc client
 	defer conn.Close()
 
-	newClient := pb.NewHandshakeClient(conn)
+	newClient := pb.NewHandshakeClient(conn) //init handshake client
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	defer cancel() //for resource effeciency
 
-	reply, err := newClient.Handshake(ctx, &pb.HandshakeRequest{
+	reply, err := newClient.Handshake(ctx, &pb.HandshakeRequest{ //dial handshake server from this client
 		Username:        "User1",
 		HandshakeStatus: pb.HandshakeStatus_HANDSHAKE_TYPE_REQUESTED,
 		HandshakeAt:     timestamppb.Now(),
