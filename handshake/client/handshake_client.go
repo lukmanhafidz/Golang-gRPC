@@ -26,7 +26,7 @@ func main() {
 
 	newClient := pb.NewHandshakeClient(conn) //init handshake client
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel() //for resource effeciency
 
 	reply, err := newClient.Handshake(ctx, &pb.HandshakeRequest{ //dial handshake server from this client
